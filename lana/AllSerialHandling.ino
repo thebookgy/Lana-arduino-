@@ -20,7 +20,7 @@ void serialOutputWhenBeatHappens(){
     Serial.print("*** Heart-Beat Happened *** ");  //ASCII Art Madness
     Serial.print("BPM: ");
     Serial.print(BPM);
-    Serial.print("  ");
+    Serial.print("  \n");
  } else{
         sendDataToSerial('B',BPM);   // send heart rate with a 'B' prefix
         sendDataToSerial('Q',IBI);   // send time between beats with a 'Q' prefix
