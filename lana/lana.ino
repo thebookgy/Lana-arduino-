@@ -4,6 +4,7 @@
     
     File myFile;
     const int chipSelect = 4;
+    String sdfilename;
     
     int LED= 12;  
     char input;  
@@ -31,7 +32,8 @@
       Serial.begin(9600);             // we agree to talk fast!
       pinMode(LED, OUTPUT);  
       Serial.println(">> START<<");  
-      sd();
+      sdfilename = "eiei";
+      sd(sdfilename);
       //interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS 
        // IF YOU ARE POWERING The Pulse Sensor AT VOLTAGE LESS THAN THE BOARD VOLTAGE, 
        // UN-COMMENT THE NEXT LINE AND APPLY THAT VOLTAGE TO THE A-REF PIN
@@ -105,7 +107,7 @@
      }
      
 /* SD Card Function *****************/ 
-void sd(){
+void sd(String sdfilename){
      Serial.print("Initializing SD card...");
      pinMode(SS, OUTPUT);
    
@@ -115,31 +117,37 @@ void sd(){
       }
       Serial.println("initialization done.");
   
-       myFile = SD.open("test.txt", FILE_WRITE);
+       myFile = SD.open(sdfilename, FILE_WRITE);
   
   // if open file has success, write data
   if (myFile) {
      Serial.println("235235tion done.");
     Serial.print("Writing to test.txt...");
-    myFile.println("testing 1, 2, 3."); //write data
+    myFile.println("data : "+String(sdfilename)); //write data
     myFile.close(); // close file
     Serial.println("done.");
   } else {
-    Serial.println("error opening test.txt");
+    Serial.println("error opening"+String(sdfilename));
   }
   
   // Open file to read
-  myFile = SD.open("test.txt"); // Open file
+  myFile = SD.open(sdfilename); // Open file
   if (myFile) {
-    Serial.println("test.txt:");
+    Serial.println(String(sdfilename)+":");
     // Read all data
     while (myFile.available()) {
     Serial.write(myFile.read());
     }
     myFile.close();
   } else {
-    Serial.println("error opening test.txt");
+    Serial.println("error opening "+String(sdfilename));
   }
+}
+
+/* Custom filename to sdcard ***************/
+void saveToSdCard(String sdfilename){
+String FileName = sdfilename;
+myFile = SD.open(FileName+".txt", FILE_WRITE);
 }
 
      
