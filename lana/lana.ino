@@ -1,8 +1,12 @@
 
-
+    #include <SPI.h>
+    #include <SD.h>
+    
+    File myFile;
+    const int chipSelect = 4;
+    
     int LED= 12;  
     char input;  
-    
         //  Variables
     int pulsePin = 0;                 // Pulse Sensor purple wire connected to analog pin 0
     int blinkPin = 13;                // pin to blink led at each beat
@@ -25,13 +29,15 @@
       pinMode(blinkPin,OUTPUT);         // pin that will blink to your heartbeat!
       pinMode(fadePin,OUTPUT);          // pin that will fade to your heartbeat!
       Serial.begin(9600);             // we agree to talk fast!
-      interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS 
+      pinMode(LED, OUTPUT);  
+      Serial.println(">> START<<");  
+      sd();
+      //interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS 
        // IF YOU ARE POWERING The Pulse Sensor AT VOLTAGE LESS THAN THE BOARD VOLTAGE, 
        // UN-COMMENT THE NEXT LINE AND APPLY THAT VOLTAGE TO THE A-REF PIN
     //   analogReference(EXTERNAL);   
       
-      pinMode(LED, OUTPUT);  
-      Serial.println(">> START<<");  
+      
     }  
       
     void loop() 
@@ -42,11 +48,13 @@
         delay(1000);//ms
        }
        */
-       pul();
-        bt(BPM);
+      // pul();
+       bt(BPM);
+       
     }  
+
+/* Pulse Function *****************/ 
     void pul(){
-      
     serialOutput() ;       
     
     if (QS == true){     // A Heartbeat Was Found
@@ -62,12 +70,15 @@
     ledFadeToBeat();                      // Makes the LED Fade Effect Happen 
     delay(20);                             //  take a break
   }
+/* LED Alert(Beat) *****************/ 
   void ledFadeToBeat(){
       fadeRate -= 15;                         //  set LED fade value
       fadeRate = constrain(fadeRate,0,255);   //  keep LED fade value from going into negative numbers!
       analogWrite(fadePin,fadeRate);          //  fade LED
     }
-    void bt(int BPM){
+
+/* Bluetooth *****************/ 
+   void bt(int BPM){
       if(Serial.available()>0)  
       {  
         input= Serial.read(); 
@@ -92,3 +103,43 @@
         }  
       } 
      }
+     
+/* SD Card Function *****************/ 
+void sd(){
+     Serial.print("Initializing SD card...");
+     pinMode(SS, OUTPUT);
+   
+      if (!SD.begin(chipSelect)) {
+        Serial.println("initialization failed!");
+        return;
+      }
+      Serial.println("initialization done.");
+  
+       myFile = SD.open("test.txt", FILE_WRITE);
+  
+  // if open file has success, write data
+  if (myFile) {
+     Serial.println("235235tion done.");
+    Serial.print("Writing to test.txt...");
+    myFile.println("testing 1, 2, 3."); //write data
+    myFile.close(); // close file
+    Serial.println("done.");
+  } else {
+    Serial.println("error opening test.txt");
+  }
+  
+  // Open file to read
+  myFile = SD.open("test.txt"); // Open file
+  if (myFile) {
+    Serial.println("test.txt:");
+    // Read all data
+    while (myFile.available()) {
+    Serial.write(myFile.read());
+    }
+    myFile.close();
+  } else {
+    Serial.println("error opening test.txt");
+  }
+}
+
+     
