@@ -1,6 +1,9 @@
 
+   // #define SD_CS_PIN SS
     #include <SPI.h>
     #include <SD.h>
+    //#include <SdFat.h>
+    //SdFat SD;
     
     File myFile;
     const int chipSelect = 4;
@@ -32,9 +35,9 @@
       Serial.begin(9600);             // we agree to talk fast!
       pinMode(LED, OUTPUT);  
       Serial.println(">> START<<");  
-      sdfilename = "eiei";
-      sd(sdfilename);
-      //interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS 
+      sdfilename = "test01";
+      
+      interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS 
        // IF YOU ARE POWERING The Pulse Sensor AT VOLTAGE LESS THAN THE BOARD VOLTAGE, 
        // UN-COMMENT THE NEXT LINE AND APPLY THAT VOLTAGE TO THE A-REF PIN
     //   analogReference(EXTERNAL);   
@@ -50,7 +53,7 @@
         delay(1000);//ms
        }
        */
-      // pul();
+       pul();
        bt(BPM);
        
     }  
@@ -86,7 +89,9 @@
         input= Serial.read(); 
         if(input=='1')  
         {  
-          Serial.println("ON");  
+          Serial.println("ON BLUETOOTH");  
+          Serial.println("=========================");
+          sd(sdfilename,BPM); 
           digitalWrite(LED, HIGH);  
           delay(2000);  
          Serial.println("BMP "+String(BPM));
@@ -107,8 +112,9 @@
      }
      
 /* SD Card Function *****************/ 
-void sd(String sdfilename){
-     Serial.print("Initializing SD card...");
+void sd(String sdfilename,int BPM){
+  
+     Serial.print("Initializing SD card...\n");
      pinMode(SS, OUTPUT);
    
       if (!SD.begin(chipSelect)) {
@@ -121,11 +127,10 @@ void sd(String sdfilename){
   
   // if open file has success, write data
   if (myFile) {
-     Serial.println("235235tion done.");
-    Serial.print("Writing to test.txt...");
-    myFile.println("data : "+String(sdfilename)); //write data
+    Serial.print("Writing to "+String(sdfilename));
+    myFile.println("data : "+String(BPM)); //write data
     myFile.close(); // close file
-    Serial.println("done.");
+    Serial.println(" done.");
   } else {
     Serial.println("error opening"+String(sdfilename));
   }
@@ -138,10 +143,11 @@ void sd(String sdfilename){
     while (myFile.available()) {
     Serial.write(myFile.read());
     }
-    myFile.close();
+   myFile.close();
   } else {
     Serial.println("error opening "+String(sdfilename));
   }
+    Serial.println("=========================");
 }
 
 /* Custom filename to sdcard ***************/
