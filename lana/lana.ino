@@ -20,6 +20,7 @@
     // Volatile Variables, used in the interrupt service routine!
     volatile int BPM;                   // int that holds raw Analog in 0. updated every 2mS
     volatile int Signal;                // holds the incoming raw data
+    volatile float resSignal = 0.0;     // holds the estimated raw data
     volatile int IBI = 600;             // int that holds the time interval between beats! Must be seeded! 
     volatile boolean Pulse = false;     // "True" when User's live heartbeat is detected. "False" when not a "live beat". 
     volatile boolean QS = false;        // becomes true when Arduoino finds a beat.
@@ -35,7 +36,7 @@
       Serial.begin(9600);             // we agree to talk fast!
       pinMode(LED, OUTPUT);  
       Serial.println(">> START<<");  
-      sdfilename1 = "test01";
+      sdfilename0 = "test01";
       sdfilename = sdfilename0+".txt" ;
       
       interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS 
