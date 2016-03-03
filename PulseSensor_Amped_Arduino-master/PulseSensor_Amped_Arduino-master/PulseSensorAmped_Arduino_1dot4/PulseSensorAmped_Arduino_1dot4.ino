@@ -18,6 +18,7 @@ int pulsePin = 0;                 // Pulse Sensor purple wire connected to analo
 int blinkPin = 13;                // pin to blink led at each beat
 int fadePin = 5;                  // pin to do fancy classy fading blink at each beat
 int fadeRate = 0;                 // used to fade LED on with PWM on fadePin
+int flagQS = 0;
 
 // Volatile Variables, used in the interrupt service routine!
 volatile int BPM;                   // int that holds raw Analog in 0. updated every 2mS
@@ -44,16 +45,20 @@ void setup(){
 //  Where the Magic Happens
 void loop(){
   
-    serialOutput() ;       
+    serialOutput();       
     
   if (QS == true){     // A Heartbeat Was Found
                        // BPM and IBI have been Determined
-                       // Quantified Self "QS" true when arduino finds a heartbeat
+        flagQS = 1;           // Quantified Self "QS" true when arduino finds a heartbeat
         digitalWrite(blinkPin,HIGH);     // Blink LED, we got a beat. 
         fadeRate = 255;         // Makes the LED Fade Effect Happen
                                 // Set 'fadeRate' Variable to 255 to fade LED with pulse
         serialOutputWhenBeatHappens();   // A Beat Happened, Output that to serial.     
         QS = false;                      // reset the Quantified Self flag for next time    
+  }else{
+    flagQS = 1;
+    serialOutputWhenBeatHappens();
+    QS = false;
   }
      
   ledFadeToBeat();                      // Makes the LED Fade Effect Happen 

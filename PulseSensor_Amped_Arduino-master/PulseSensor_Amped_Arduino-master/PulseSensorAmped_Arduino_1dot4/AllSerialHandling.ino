@@ -22,9 +22,16 @@ void serialOutputWhenBeatHappens(){
     Serial.print(BPM);
     Serial.print("  ");
  } else{
+  if(flagQS==1){
+
         sendDataToSerial('B',BPM);   // send heart rate with a 'B' prefix
         sendDataToSerial('Q',IBI);   // send time between beats with a 'Q' prefix
- }   
+ }else{
+        sendDataToSerial('B',0);   // send heart rate with a 'B' prefix
+        sendDataToSerial('Q',IBI);   // send time between beats with a 'Q' prefix
+  }
+ 
+ }
 }
 
 
@@ -32,7 +39,6 @@ void serialOutputWhenBeatHappens(){
 //  Sends Data to Pulse Sensor Processing App, Native Mac App, or Third-party Serial Readers. 
 void sendDataToSerial(char symbol, int data ){
     Serial.print(symbol);
-
     Serial.println(data);                
   }
 

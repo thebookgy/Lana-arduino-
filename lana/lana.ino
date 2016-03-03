@@ -7,8 +7,8 @@
     
     File myFile;
     const int chipSelect = 4;
-    String sdfilename;
-    
+    String sdfilename0;
+    String sdfilename; 
     int LED= 12;  
     char input;  
         //  Variables
@@ -35,7 +35,8 @@
       Serial.begin(9600);             // we agree to talk fast!
       pinMode(LED, OUTPUT);  
       Serial.println(">> START<<");  
-      sdfilename = "test01";
+      sdfilename1 = "test01";
+      sdfilename = sdfilename0+".txt" ;
       
       interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS 
        // IF YOU ARE POWERING The Pulse Sensor AT VOLTAGE LESS THAN THE BOARD VOLTAGE, 
@@ -153,7 +154,7 @@ void sd(String sdfilename,int BPM){
 /* Custom filename to sdcard ***************/
 void saveToSdCard(String sdfilename){
 String FileName = sdfilename;
-myFile = SD.open(FileName+".txt", FILE_WRITE);
+myFile = SD.open(FileName, FILE_WRITE);
 }
 
      
