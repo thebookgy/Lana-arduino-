@@ -10,6 +10,15 @@ volatile int thresh = 525;                // used to find instant moment of hear
 volatile int amp = 100;                   // used to hold amplitude of pulse waveform, seeded
 volatile boolean firstBeat = true;        // used to seed rate array so we startup with reasonable BPM
 volatile boolean secondBeat = false;      // used to seed rate array so we startup with reasonable BPM
+volatile float R = 2009.144949;  // Measurement Noise
+volatile float Q = 1.00E-08; // Process Noise
+volatile float Pc = 0.0; // Variance of pre estimation state (before sensor got value)
+volatile float G = 0.0;  // Kalman Gain
+volatile float Pp = 1.0;  // Variance of previous step
+volatile float Xp = 0.0; // Previous estimation of true state
+volatile float Zp = 0.0; // Estimation of true state
+volatile float Xe = 0.0; // Estimation from kalman filter (Result)
+
 
    
 void interruptSetup(){     
@@ -27,7 +36,16 @@ void interruptSetup(){
 ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts to 124
   cli();                                      // disable interrupts while we do this
   Signal = analogRead(pulsePin);              // read the Pulse Sensor 
-  sampleCounter += 2;                         // keep track of the time in mS with this variable
+  /* kalman *********************************/
+   Pc = Pp + Q;         // variance of pre estimation state
+  G = Pc/(Pc + R);    // kalman gain
+  Pp = (1-G)*Pc;       // variance of estimation state
+  Xp = Xe;            // previous estimation of true state
+  Zp = Xp;            // estimation of true state
+  Xe = G*(Signal-Zp)+Xp;   // the kalman estimate of the sensor voltage
+  resSignal = Xe;        // Keep estimate value
+  /* end kalman ***************************/
+    sampleCounter += 2;                         // keep track of the time in mS with this variable
   int N = sampleCounter - lastBeatTime;       // monitor the time since the last beat to avoid noise
   
   
@@ -45,20 +63,20 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
 
   
     //  find the peak and trough of the pulse wave
-  if(Signal < thresh && N > (IBI/5)*3){       // avoid dichrotic noise by waiting 3/5 of last IBI
-    if (Signal < T){                        // T is the trough
-      T = Signal;                         // keep track of lowest point in pulse wave 
+  if(resSignal < thresh && N > (IBI/5)*3){       // avoid dichrotic noise by waiting 3/5 of last IBI
+    if (resSignal < T){                        // T is the trough
+      T = resSignal;                         // keep track of lowest point in pulse wave 
     }
   }
 
-  if(Signal > thresh && Signal > P){          // thresh condition helps avoid noise
-    P = Signal;                             // P is the peak
+  if(resSignal > thresh && resSignal > P){          // thresh condition helps avoid noise
+    P = resSignal;                             // P is the peak
   }                                        // keep track of highest point in pulse wave
 
   //  NOW IT'S TIME TO LOOK FOR THE HEART BEAT
   // signal surges up in value every time there is a pulse
   if (N > 250){                                   // avoid high frequency noise
-    if ( (Signal > thresh) && (Pulse == false) && (N > (IBI/5)*3) ){        
+    if ( (resSignal > thresh) && (Pulse == false) && (N > (IBI/5)*3) ){        
       Pulse = true;                               // set the Pulse flag when we think there is a pulse
       digitalWrite(blinkPin,HIGH);                // turn on pin 13 LED
       IBI = sampleCounter - lastBeatTime;         // measure time between beats in mS
@@ -96,7 +114,7 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
     }                       
   }
 
-  if (Signal < thresh && Pulse == true){   // when the values are going down, the beat is over
+  if (resSignal < thresh && Pulse == true){   // when the values are going down, the beat is over
    digitalWrite(blinkPin,LOW);            // turn off pin 13 LED
     Pulse = false;                         // reset the Pulse flag so we can do it again
     amp = P - T;                           // get amplitude of the pulse wave
