@@ -23,7 +23,16 @@
     volatile int IBI = 600;             // int that holds the time interval between beats! Must be seeded! 
     volatile boolean Pulse = false;     // "True" when User's live heartbeat is detected. "False" when not a "live beat". 
     volatile boolean QS = false;        // becomes true when Arduoino finds a beat.
-    
+    float voltage;
+    float filterFrequency = 5.0; 
+    float R = 0.026342059;  // or 5921.87658; Measurement Noise
+    float Q = 1e-8; // Process Noise
+    float Pc = 0.0; // Variance of pre estimation state (before sensor got value)
+    float G = 0.0;  // Kalman Gain
+    float Pp = 1.0;  // Variance of previous step
+    float Xp = 0.0; // Previous estimation of true state
+    float Zp = 0.0; // Estimation of true state
+    float Xe = 0.0; // Estimation from kalman filter (Result)
     // Regards Serial OutPut  -- Set This Up to your needs
     static boolean serialVisual = true;   // Set to 'false' by Default.  Re-set to 'true' to see Arduino Serial Monitor ASCII Visual Pulse 
       
@@ -70,6 +79,9 @@
                                   // Set 'fadeRate' Variable to 255 to fade LED with pulse
           serialOutputWhenBeatHappens();   // A Beat Happened, Output that to serial.     
           QS = false;                      // reset the Quantified Self flag for next time    
+    }else{
+        serialOutputWhenBeatHappens();   // A Beat Happened, Output that to serial.     
+         //QS = false;                      // reset the Quantified Self flag for next time    
     }
        
     ledFadeToBeat();                      // Makes the LED Fade Effect Happen 

@@ -11,7 +11,7 @@ volatile int amp = 100;                   // used to hold amplitude of pulse wav
 volatile boolean firstBeat = true;        // used to seed rate array so we startup with reasonable BPM
 volatile boolean secondBeat = false;      // used to seed rate array so we startup with reasonable BPM
 
-
+   
 void interruptSetup(){     
   // Initializes Timer2 to throw an interrupt every 2mS.
   TCCR2A = 0x02;     // DISABLE PWM ON DIGITAL PINS 3 AND 11, AND GO INTO CTC MODE
@@ -29,7 +29,21 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
   Signal = analogRead(pulsePin);              // read the Pulse Sensor 
   sampleCounter += 2;                         // keep track of the time in mS with this variable
   int N = sampleCounter - lastBeatTime;       // monitor the time since the last beat to avoid noise
+  
+  
+  voltage = Signal * 5.0 / 1023.0;
+ /* kalman *********************************/
+  Pc = Pp + Q;         // variance of pre estimation state
+  G = Pc/(Pc + R);    // kalman gain
+  Pp = (1-G)*Pc;       // variance of estimation state
+  Xp = Xe;            // previous estimation of true state
+  Zp = Xp;            // estimation of true state
+  Xe = G*(Signal-Zp)+Xp;   // the kalman estimate of the sensor voltage
+  Signal = (int) Xe;        // Keep estimate value
+  //Signal = (int)resSignal;
+  /* end kalman ***************************/
 
+  
     //  find the peak and trough of the pulse wave
   if(Signal < thresh && N > (IBI/5)*3){       // avoid dichrotic noise by waiting 3/5 of last IBI
     if (Signal < T){                        // T is the trough
@@ -98,6 +112,7 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
     lastBeatTime = sampleCounter;          // bring the lastBeatTime up to date        
     firstBeat = true;                      // set these to avoid noise
     secondBeat = false;                    // when we get the heartbeat back
+    BPM = 0;
   }
 
   sei();                                   // enable interrupts when youre done!
