@@ -20,7 +20,6 @@
     // Volatile Variables, used in the interrupt service routine!
     volatile int BPM;                   // int that holds raw Analog in 0. updated every 2mS
     volatile int Signal;                // holds the incoming raw data
-    volatile float resSignal = 0.0;     // holds the estimated raw data
     volatile int IBI = 600;             // int that holds the time interval between beats! Must be seeded! 
     volatile boolean Pulse = false;     // "True" when User's live heartbeat is detected. "False" when not a "live beat". 
     volatile boolean QS = false;        // becomes true when Arduoino finds a beat.
@@ -33,7 +32,7 @@
     float Pp = 1.0;  // Variance of previous step
     float Xp = 0.0; // Previous estimation of true state
     float Zp = 0.0; // Estimation of true state
-    float Xe = 0.0; // Estimation from kalman filter (Result)
+    float Xe = 0.0; // Estimation from kalman filter (Result)    
     // Regards Serial OutPut  -- Set This Up to your needs
     static boolean serialVisual = true;   // Set to 'false' by Default.  Re-set to 'true' to see Arduino Serial Monitor ASCII Visual Pulse 
       
@@ -82,19 +81,15 @@
           serialOutputWhenBeatHappens();   // A Beat Happened, Output that to serial.     
           QS = false;                      // reset the Quantified Self flag for next time    
     }else{
-        serialOutputWhenBeatHappens();   // A Beat Happened, Output that to serial.     
+       // digitalWrite(blinkPin,LOW);            // There is not beat, turn off pin 13 LED
+       // serialOutputWhenBeatHappens();   // A Beat Happened, Output that to serial.     
          //QS = false;                      // reset the Quantified Self flag for next time    
     }
        
     ledFadeToBeat();                      // Makes the LED Fade Effect Happen 
     delay(20);                             //  take a break
   }
-/* LED Alert(Beat) *****************/ 
-  void ledFadeToBeat(){
-      fadeRate -= 15;                         //  set LED fade value
-      fadeRate = constrain(fadeRate,0,255);   //  keep LED fade value from going into negative numbers!
-      analogWrite(fadePin,fadeRate);          //  fade LED
-    }
+
 
 /* Bluetooth *****************/ 
    void bt(int BPM){
