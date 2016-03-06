@@ -17,8 +17,12 @@ void serialOutput(){   // Decide How To Output Serial.
 //  Decides How To OutPut BPM and IBI Data
 void serialOutputWhenBeatHappens(){    
  if (serialVisual == true){            //  Code to Make the Serial Monitor Visualizer Work
-    Serial.print("*** Heart-Beat Happened *** ");  //ASCII Art Madness
-    Serial.print("BPM: ");
+   // Serial.print("*** Heart-Beat Happened *** ");  //ASCII Art Madness
+   // Serial.print("BPM: ");
+    Serial.print(Signal);
+    Serial.print(" - ");
+    Serial.print(Signal2);
+    Serial.print(" - ");
     Serial.print(BPM);
     Serial.print("  \n");
  } else{
@@ -32,16 +36,10 @@ void serialOutputWhenBeatHappens(){
 //  Sends Data to Pulse Sensor Processing App, Native Mac App, or Third-party Serial Readers. 
 void sendDataToSerial(char symbol, int data ){
     Serial.print(symbol);
-
     Serial.println(data);                
   }
   
-/* LED Alert(Beat) *****************/ 
-  void ledFadeToBeat(){
-      fadeRate -= 15;                         //  set LED fade value
-      fadeRate = constrain(fadeRate,0,255);   //  keep LED fade value from going into negative numbers!
-      analogWrite(fadePin,fadeRate);          //  fade LED
-    }
+
 
 //  Code to Make the Serial Monitor Visualizer Work
 void arduinoSerialMonitorVisual(char symbol, int data ){    

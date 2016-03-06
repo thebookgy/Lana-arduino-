@@ -20,12 +20,13 @@
     // Volatile Variables, used in the interrupt service routine!
     volatile int BPM;                   // int that holds raw Analog in 0. updated every 2mS
     volatile int Signal;                // holds the incoming raw data
+    volatile int Signal2; 
     volatile int IBI = 600;             // int that holds the time interval between beats! Must be seeded! 
     volatile boolean Pulse = false;     // "True" when User's live heartbeat is detected. "False" when not a "live beat". 
     volatile boolean QS = false;        // becomes true when Arduoino finds a beat.
     float voltage;
     float filterFrequency = 5.0; 
-    float R = 0.026342059;  // or 5921.87658; Measurement Noise
+    float R = 0.004037521;  // or 0.026342059; 2912.114; 5921.87658; Measurement Noise
     float Q = 1e-8; // Process Noise
     float Pc = 0.0; // Variance of pre estimation state (before sensor got value)
     float G = 0.0;  // Kalman Gain
@@ -89,7 +90,12 @@
     ledFadeToBeat();                      // Makes the LED Fade Effect Happen 
     delay(20);                             //  take a break
   }
-
+/* LED Alert(Beat) *****************/ 
+  void ledFadeToBeat(){
+      fadeRate -= 15;                         //  set LED fade value
+      fadeRate = constrain(fadeRate,0,255);   //  keep LED fade value from going into negative numbers!
+      analogWrite(fadePin,fadeRate);          //  fade LED
+    }
 
 /* Bluetooth *****************/ 
    void bt(int BPM){

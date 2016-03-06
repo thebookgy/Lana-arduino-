@@ -36,11 +36,12 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
   Xp = Xe;            // previous estimation of true state
   Zp = Xp;            // estimation of true state
   Xe = G*(Signal-Zp)+Xp;   // the kalman estimate of the sensor voltage
-  //Signal = Xe;        // Keep estimate value
+  Signal = Xe;        // Keep estimate value
+  Signal2 = Xe;
   /* end kalman ***************************/
   sampleCounter += 2;                         // keep track of the time in mS with this variable
   int N = sampleCounter - lastBeatTime;       // monitor the time since the last beat to avoid noise
-  voltage = Signal * 5.0 / 1023.0;
+  voltage = Signal * 1.1 / 1024; //or 50/2023
 
 
   
@@ -60,7 +61,7 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
   if (N > 250){                                   // avoid high frequency noise
     if ( (Signal > thresh) && (Pulse == false) && (N > (IBI/5)*3) ){        
       Pulse = true;                               // set the Pulse flag when we think there is a pulse
-      //digitalWrite(blinkPin,HIGH);                // turn on pin 13 LED
+      digitalWrite(blinkPin,HIGH);                // turn on pin 13 LED
       IBI = sampleCounter - lastBeatTime;         // measure time between beats in mS
       lastBeatTime = sampleCounter;               // keep track of time for next pulse
 
@@ -97,7 +98,7 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
   }
 
   if (Signal < thresh && Pulse == true){   // when the values are going down, the beat is over
-   //digitalWrite(blinkPin,LOW);            // turn off pin 13 LED
+   digitalWrite(blinkPin,LOW);            // turn off pin 13 LED
     Pulse = false;                         // reset the Pulse flag so we can do it again
     amp = P - T;                           // get amplitude of the pulse wave
     thresh = amp/2 + T;                    // set thresh at 50% of the amplitude
@@ -113,6 +114,7 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
     firstBeat = true;                      // set these to avoid noise
     secondBeat = false;                    // when we get the heartbeat back
     BPM = 0;
+    //QS = false;
   }
 
   sei();                                   // enable interrupts when youre done!
