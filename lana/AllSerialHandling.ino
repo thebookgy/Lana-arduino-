@@ -19,12 +19,13 @@ void serialOutputWhenBeatHappens(){
  if (serialVisual == true){            //  Code to Make the Serial Monitor Visualizer Work
    // Serial.print("*** Heart-Beat Happened *** ");  //ASCII Art Madness
    // Serial.print("BPM: ");
-    Serial.print(Signal);
-    Serial.print(" - ");
     Serial.print(Signal2);
-    Serial.print(" - ");
+    Serial.print("(Signal old) - ");
+    Serial.print(Signal);
+    Serial.print("(Signal new) - ");
     Serial.print(BPM);
     Serial.print("  \n");
+    //Serial.println(voltage);
  } else{
         sendDataToSerial('B',BPM);   // send heart rate with a 'B' prefix
         sendDataToSerial('Q',IBI);   // send time between beats with a 'Q' prefix
