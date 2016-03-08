@@ -37,7 +37,7 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
   Xp = Xe;            // previous estimation of true state
   Zp = Xp;            // estimation of true state
   Xe = G*(Signal-Zp)+Xp;   // the kalman estimate of the sensor voltage
-  Signal = Xe;        // Keep estimate value
+  //Signal = Xe;        // Keep estimate value
   //Signal2 = Xe;
   /* end kalman ***************************/
   sampleCounter += 2;                         // keep track of the time in mS with this variable
@@ -107,16 +107,17 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
     T = thresh;
   }
 
-  if (N > 6500){                           // if 2.5 seconds go by without a beat
-    thresh = 512;                          // set thresh default
-    P = 512;                               // set P default
-    T = 512;                               // set T default
+  if (N > 2500){                           // if 2.5 seconds go by without a beat
+    //thresh = 512;                          // set thresh default
+    //P = 512;                               // set P default
+    //T = 512;                               // set T default
     lastBeatTime = sampleCounter;          // bring the lastBeatTime up to date        
     firstBeat = true;                      // set these to avoid noise
     secondBeat = false;                    // when we get the heartbeat back
     BPM = 0;
     //QS = false;
   }
+  
 
   sei();                                   // enable interrupts when youre done!
 }// end isr

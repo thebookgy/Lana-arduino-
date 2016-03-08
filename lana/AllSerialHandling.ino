@@ -28,7 +28,7 @@ void serialOutputWhenBeatHappens(){
     Serial.print("(BPM) - ");
     */
     
-   //Serial.print(voltage);
+   // Serial.println(voltage);
    Serial.print("  \n");
     
  } else{
