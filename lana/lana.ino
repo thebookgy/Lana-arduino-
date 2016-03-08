@@ -26,7 +26,7 @@
     volatile boolean QS = false;        // becomes true when Arduoino finds a beat.
     float voltage;
     float filterFrequency = 5.0; 
-    float R = 0.002804;  // or 0.026342059; 2912.114; 5921.87658; Measurement Noise
+    float R = 0.003234;  // or 0.002804; 0.026342059; 2912.114; 5921.87658; Measurement Noise
     float Q = 1e-8; // Process Noise
     float Pc = 0.0; // Variance of pre estimation state (before sensor got value)
     float G = 0.0;  // Kalman Gain

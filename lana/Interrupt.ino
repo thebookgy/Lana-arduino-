@@ -31,7 +31,7 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
   Signal = analogRead(pulsePin);              // read the Pulse Sensor 
    Signal2 = analogRead(pulsePin);       
   /* kalman *********************************/
-   Pc = Pp + Q;         // variance of pre estimation state
+  Pc = Pp + Q;         // variance of pre estimation state
   G = Pc/(Pc + R);    // kalman gain
   Pp = (1-G)*Pc;       // variance of estimation state
   Xp = Xe;            // previous estimation of true state
@@ -107,7 +107,7 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
     T = thresh;
   }
 
-  if (N > 2500){                           // if 2.5 seconds go by without a beat
+  if (N > 6500){                           // if 2.5 seconds go by without a beat
     thresh = 512;                          // set thresh default
     P = 512;                               // set P default
     T = 512;                               // set T default
