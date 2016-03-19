@@ -1,32 +1,36 @@
-/*
-Blink
-Turns on an LED on for one second, then off for one second, repeatedly.
+#include <SoftwareSerial.h>
 
-This example code is in the public domain.
-*/
+int bluetoothTx = 2;
+int bluetoothRx = 3;
 
-// Pin 13 has an LED connected on most Arduino boards.
-// give it a name:
-int led = 13;
+SoftwareSerial bluetooth(bluetoothTx, bluetoothRx);
 
- 
-
-// the setup routine runs once when you press reset:
-void setup() { 
-
-Serial.begin(9600);  // initialize the digital pin as an output.
-while (!Serial) {}
-; // wait for serial port to connect. Needed for Leonardo only
-pinMode(led, OUTPUT); 
+void setup()
+{
+  //Setup usb serial connection to computer
+  Serial.begin(9600);
+  
+  //Setup Bluetooth serial connection to android
+  bluetooth.begin(115200);
+  bluetooth.print("$$$");
+  delay(100);
+  bluetooth.println("U,9600,N");
+  bluetooth.begin(9600);
 }
 
- 
-
-// the loop routine runs over and over again forever:
-void loop() {
-digitalWrite(led, HIGH); // turn the LED on (HIGH is the voltage level)
-delay(1000); // wait for a second
-digitalWrite(led, LOW); // turn the LED off by making the voltage LOW
-delay(1000); // wait for a second
-Serial.println("Communication from Bluetooth");
+void loop()
+{ 
+  //Read from bluetooth and write to usb serial 
+  if(bluetooth.available())
+  {
+    char toSend = (char)bluetooth.read();
+    Serial.print(toSend);
+  }
+  
+  //Read from usb serial to bluetooth
+  if(Serial.available())
+  {
+    char toSend = (char)Serial.read();
+    bluetooth.print(toSend);
+  }
 }
