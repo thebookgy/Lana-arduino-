@@ -59,10 +59,10 @@
     void setDateDs1307()
     {
       second =0;
-      minute = 15;
-      hour = 20;
+      minute = 8;
+      hour = 10;
       dayOfWeek = 2;
-      dayOfMonth =17;
+      dayOfMonth =22;
       month =3;
       year= 16;
       Wire.beginTransmission(DS1307_I2C_ADDRESS);
@@ -109,15 +109,14 @@
       
     void setup() 
     {  
-
+      Wire.begin();
       pinMode(blinkPin,OUTPUT);         // pin that will blink to your heartbeat!
       pinMode(fadePin,OUTPUT);          // pin that will fade to your heartbeat!
       Serial.begin(9600);             // we agree to talk fast!
       pinMode(LED, OUTPUT);  
       Serial.println(">> START<<");  
       setDateDs1307(); //Set current time;
-      sdfilename0 = txt_date;
-      sdfilename = sdfilename0+".txt" ;
+     
       
       interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS 
        // IF YOU ARE POWERING The Pulse Sensor AT VOLTAGE LESS THAN THE BOARD VOLTAGE, 
@@ -138,6 +137,8 @@
        getDateDs1307();
        pul();
        bt(BPM);
+       sdfilename0 = txt_date;
+       sdfilename = sdfilename0+".txt" ;
        
     }  
 
