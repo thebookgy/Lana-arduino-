@@ -18,10 +18,13 @@ void serialOutput(){   // Decide How To Output Serial.
 void serialOutputWhenBeatHappens(){    
  if (serialVisual == true){            //  Code to Make the Serial Monitor Visualizer Work
    // Serial.print("*** Heart-Beat Happened *** ");  //ASCII Art Madness
+   Serial.print(" Time: "+txt_time+" ");
    Serial.print("BPM: "+String(BPM)+" - sumpulse: "+String(sumpulse)+" - BPMcount: "+String(BPMcount)+" - avgBPM: "+String(avgBPM));
+   
    sumpulse += BPM;
    BPMcount += 1;
    avgBPM = (sumpulse/BPMcount);
+   
    /*
     Serial.print(Signal2);
     Serial.print("(Signal old) - ");

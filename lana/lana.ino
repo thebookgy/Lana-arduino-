@@ -14,6 +14,8 @@
     int sumpulse = 0;
     int BPMcount = 0;
     float avgBPM = 0.0;
+    int flagpul = 1;
+    String minfirst,hourfirst ;
     int pulsePin = 0;                 // Pulse Sensor purple wire connected to analog pin 0
     int blinkPin = 13;                // pin to blink led at each beat
     int fadePin = 5;                  // pin to do fancy classy fading blink at each beat
@@ -41,7 +43,8 @@
 
     //setting time
     
-    String txt_date,txt_time;
+    String txt_date,txt_time,txt_hour;
+    String txt_min;
     
     #define DS1307_I2C_ADDRESS 0x68 // the I2C address of Tiny RTC
     byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
@@ -98,6 +101,8 @@
       txt_date=String(dayOfMonth,DEC)+"-"+String(month, DEC)+"-"+String(year, DEC);
       //txt_time=String(hour,DEC)+":"+String(minute, DEC)+":"+String(second, DEC);
       txt_time=String(hour,DEC)+":"+String(minute, DEC);
+      txt_min=String(minute, DEC);  
+      txt_hour=String(hour,DEC);
       
       
       //Serial.print(hour, DEC);
@@ -138,6 +143,7 @@
         delay(1000);//ms
        }
        */
+     
        getDateDs1307();
        pul();
        bt(BPM);
@@ -148,9 +154,15 @@
 
 /* Pulse Function *****************/ 
     void pul(){
-    serialOutput() ;       
-    
-    if (QS == true){     // A Heartbeat Was Found
+      // Check pulse 1 minute
+      if(flagpul == 1){
+        minfirst = txt_min;
+        flagpul = 0;
+      }
+      if(minfirst == txt_min){
+
+      serialOutput() ;       
+          if (QS == true){     // A Heartbeat Was Found
                          // BPM and IBI have been Determined
                          // Quantified Self "QS" true when arduino finds a heartbeat
           digitalWrite(blinkPin,HIGH);     // Blink LED, we got a beat. 
@@ -158,14 +170,21 @@
                                   // Set 'fadeRate' Variable to 255 to fade LED with pulse
           serialOutputWhenBeatHappens();   // A Beat Happened, Output that to serial.     
           QS = false;                      // reset the Quantified Self flag for next time    
-    }else{
+          }else{
        // digitalWrite(blinkPin,LOW);            // There is not beat, turn off pin 13 LED
        // serialOutputWhenBeatHappens();   // A Beat Happened, Output that to serial.     
          //QS = false;                      // reset the Quantified Self flag for next time    
-    }
+          }
        
-    ledFadeToBeat();                      // Makes the LED Fade Effect Happen 
-    delay(20);                             //  take a break
+      ledFadeToBeat();                      // Makes the LED Fade Effect Happen 
+      delay(20);                             //  take a break
+      }else{
+      Serial.println("==========off==========");
+      delay(60000);
+      // 1 hour = 3600000
+      flagpul = 1;
+      }
+    
   }
 /* LED Alert(Beat) *****************/ 
   void ledFadeToBeat(){
