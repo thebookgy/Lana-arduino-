@@ -13,7 +13,7 @@
         //  Variables
     int sumpulse = 0;
     int BPMcount = 0;
-    float avgBPM = 0.0;
+    int avgBPM = 0;
     int flagpul = 1;
     String minfirst,hourfirst ;
     int pulsePin = 0;                 // Pulse Sensor purple wire connected to analog pin 0
@@ -43,8 +43,8 @@
 
     //setting time
     
-    String txt_date,txt_time,txt_hour;
-    String txt_min;
+    String txt_date,txt_time,txt_min;
+
     
     #define DS1307_I2C_ADDRESS 0x68 // the I2C address of Tiny RTC
     byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
@@ -65,10 +65,10 @@
     void setDateDs1307()
     {
       second =0;
-      minute = 8;
-      hour = 10;
-      dayOfWeek = 2;
-      dayOfMonth =22;
+      minute = 20;
+      hour = 12;
+      dayOfWeek = 4;
+      dayOfMonth =6;
       month =3;
       year= 16;
       Wire.beginTransmission(DS1307_I2C_ADDRESS);
@@ -102,7 +102,6 @@
       //txt_time=String(hour,DEC)+":"+String(minute, DEC)+":"+String(second, DEC);
       txt_time=String(hour,DEC)+":"+String(minute, DEC);
       txt_min=String(minute, DEC);  
-      txt_hour=String(hour,DEC);
       
       
       //Serial.print(hour, DEC);
@@ -204,10 +203,10 @@
         {  
           Serial.println("ON BLUETOOTH");  
           Serial.println("=========================");
-          sd(sdfilename,BPM); 
+          sd(sdfilename,avgBPM); 
           digitalWrite(LED, HIGH);  
           delay(2000);  
-         Serial.println("BMP "+String(BPM));
+         Serial.println("BMP "+String(avgBPM));
         }  
         else if(input=='0')  
         {  
