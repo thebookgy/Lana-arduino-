@@ -11,6 +11,9 @@
     int LED= 12;  
     char input;  
         //  Variables
+    int sumpulse = 0;
+    int BPMcount = 0;
+    float avgBPM = 0.0;
     int pulsePin = 0;                 // Pulse Sensor purple wire connected to analog pin 0
     int blinkPin = 13;                // pin to blink led at each beat
     int fadePin = 5;                  // pin to do fancy classy fading blink at each beat
@@ -93,7 +96,8 @@
       month = bcdToDec(Wire.read());
       year = bcdToDec(Wire.read());
       txt_date=String(dayOfMonth,DEC)+"-"+String(month, DEC)+"-"+String(year, DEC);
-      txt_time=String(hour,DEC)+":"+String(minute, DEC)+":"+String(second, DEC);
+      //txt_time=String(hour,DEC)+":"+String(minute, DEC)+":"+String(second, DEC);
+      txt_time=String(hour,DEC)+":"+String(minute, DEC);
       
       
       //Serial.print(hour, DEC);

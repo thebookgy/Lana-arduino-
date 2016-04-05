@@ -18,7 +18,10 @@ void serialOutput(){   // Decide How To Output Serial.
 void serialOutputWhenBeatHappens(){    
  if (serialVisual == true){            //  Code to Make the Serial Monitor Visualizer Work
    // Serial.print("*** Heart-Beat Happened *** ");  //ASCII Art Madness
-   Serial.print("BPM: "+String(BPM)+" - Signal old: "+String(Signal2)+" - Signal new: "+String(Signal)+" - Voltage: "+String(voltage));
+   Serial.print("BPM: "+String(BPM)+" - sumpulse: "+String(sumpulse)+" - BPMcount: "+String(BPMcount)+" - avgBPM: "+String(avgBPM));
+   sumpulse += BPM;
+   BPMcount += 1;
+   avgBPM = (sumpulse/BPMcount);
    /*
     Serial.print(Signal2);
     Serial.print("(Signal old) - ");
@@ -41,6 +44,7 @@ void serialOutputWhenBeatHappens(){
 
 //  Sends Data to Pulse Sensor Processing App, Native Mac App, or Third-party Serial Readers. 
 void sendDataToSerial(char symbol, int data ){
+    
     Serial.print(symbol);
     Serial.println(data);                
   }
