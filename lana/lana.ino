@@ -180,9 +180,11 @@
       delay(20);                             //  take a break
       }else{
       Serial.println("==========off==========");
-      delay(60000);
-      // 1 hour = 3600000
+      delay(3600000);
+      // 1min=60000 / 1 hour = 3600000
       flagpul = 1;
+      sumpulse = 0;
+      BPMcount = 0;
       }
     
   }
