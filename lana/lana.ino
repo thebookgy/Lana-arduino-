@@ -3,7 +3,8 @@
     #include <SPI.h>
     #include <SD.h>
     #include "Wire.h"
-
+    #include <SoftwareSerial.h>
+    SoftwareSerial mySerial(6, 7); // RX, TX
     File myFile;
     const int chipSelect = 4;
     String sdfilename0;
@@ -111,12 +112,13 @@
       Serial.print(" Time: "+txt_time);
       Serial.println();
       */
-      delay(2000);
+      //delay(2000);
     }
     
       
     void setup() 
     {  
+      
       Wire.begin();
       pinMode(blinkPin,OUTPUT);         // pin that will blink to your heartbeat!
       pinMode(fadePin,OUTPUT);          // pin that will fade to your heartbeat!
@@ -131,7 +133,8 @@
        // UN-COMMENT THE NEXT LINE AND APPLY THAT VOLTAGE TO THE A-REF PIN
     //   analogReference(EXTERNAL);   
       
-      
+     mySerial.begin(9600);
+
     }  
       
     void loop() 
@@ -142,10 +145,10 @@
         delay(1000);//ms
        }
        */
-     
-       getDateDs1307();
-       pul();
+   
        bt(BPM);
+       pul();
+       getDateDs1307();
        sdfilename0 = txt_date;
        sdfilename = sdfilename0+".txt" ;
        
@@ -176,10 +179,10 @@
           }
        
       ledFadeToBeat();                      // Makes the LED Fade Effect Happen 
-      delay(20);                             //  take a break
+      delay(1000);                             //  take a break
       }else{
       Serial.println("==========off==========");
-      delay(3600000);
+     // delay(3600000);
       // 1min=60000 / 1 hour = 3600000
       flagpul = 1;
       sumpulse = 0;
@@ -196,6 +199,13 @@
 
 /* Bluetooth *****************/ 
    void bt(int BPM){
+      if (mySerial.available()) {
+    Serial.write(mySerial.read());
+      }
+      if (Serial.available()) {
+        mySerial.write(Serial.read());
+      }
+    /*
       if(Serial.available()>0)  
       {  
         input= Serial.read(); 
@@ -221,6 +231,7 @@
           Serial.println(input);  
         }  
       } 
+      */
      }
      
 /* SD Card Function *****************/ 
