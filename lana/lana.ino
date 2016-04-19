@@ -3,7 +3,9 @@
     #include <SPI.h>
     #include <SD.h>
     #include "Wire.h"
-
+    #include <SoftwareSerial.h>
+    
+    SoftwareSerial bluetooth(6,7); // RX, TX
     File myFile;
     const int chipSelect = 4;
     String sdfilename0;
@@ -15,7 +17,7 @@
     int BPMcount = 0;
     int avgBPM = 0;
     int flagpul = 1;
-    String minfirst,hourfirst ;
+    String minfirst ;
     int pulsePin = 0;                 // Pulse Sensor purple wire connected to analog pin 0
     int blinkPin = 13;                // pin to blink led at each beat
     int fadePin = 5;                  // pin to do fancy classy fading blink at each beat
@@ -111,7 +113,7 @@
       Serial.print(" Time: "+txt_time);
       Serial.println();
       */
-      delay(2000);
+      //delay(2000);
     }
     
       
@@ -121,6 +123,7 @@
       pinMode(blinkPin,OUTPUT);         // pin that will blink to your heartbeat!
       pinMode(fadePin,OUTPUT);          // pin that will fade to your heartbeat!
       Serial.begin(9600);             // we agree to talk fast!
+      bluetooth.begin(9600);
       pinMode(LED, OUTPUT);  
       Serial.println(">> START<<");  
       setDateDs1307(); //Set current time;
@@ -143,9 +146,10 @@
        }
        */
      
-       getDateDs1307();
+       
        pul();
        bt(BPM);
+       getDateDs1307();
        sdfilename0 = txt_date;
        sdfilename = sdfilename0+".txt" ;
        
@@ -176,10 +180,10 @@
           }
        
       ledFadeToBeat();                      // Makes the LED Fade Effect Happen 
-      delay(20);                             //  take a break
+      delay(1000);                             //  take a break
       }else{
       Serial.println("==========off==========");
-      delay(3600000);
+      //delay(3600000);
       // 1min=60000 / 1 hour = 3600000
       flagpul = 1;
       sumpulse = 0;
@@ -196,6 +200,15 @@
 
 /* Bluetooth *****************/ 
    void bt(int BPM){
+    // Keep reading from HC-05 and send to Arduino Serial Monitor
+  if (bluetooth.available())
+    Serial.write(bluetooth.read());
+
+  // Keep reading from Arduino Serial Monitor and send to HC-05
+  if (Serial.available())
+    bluetooth.write(Serial.read());
+
+    /*
       if(Serial.available()>0)  
       {  
         input= Serial.read(); 
@@ -221,6 +234,8 @@
           Serial.println(input);  
         }  
       } 
+      */
+      
      }
      
 /* SD Card Function *****************/ 
