@@ -4,12 +4,8 @@
     #include <SD.h>
     #include "Wire.h"
     #include <SoftwareSerial.h>
-<<<<<<< HEAD
-    
-    SoftwareSerial bluetooth(6,7); // RX, TX
-=======
-    SoftwareSerial mySerial(6, 7); // RX, TX
->>>>>>> 72dc8ba7acb50a9cb17d33e611618753ce12ec99
+
+    SoftwareSerial bluetooth(6, 7); // RX, TX
     File myFile;
     const int chipSelect = 4;
     String sdfilename0;
@@ -139,7 +135,7 @@
        // UN-COMMENT THE NEXT LINE AND APPLY THAT VOLTAGE TO THE A-REF PIN
     //   analogReference(EXTERNAL);   
       
-     mySerial.begin(9600);
+     bluetooth.begin(9600);
 
     }  
       
@@ -151,16 +147,9 @@
         delay(1000);//ms
        }
        */
-<<<<<<< HEAD
-     
        
        pul();
        bt(BPM);
-=======
-   
-       bt(BPM);
-       pul();
->>>>>>> 72dc8ba7acb50a9cb17d33e611618753ce12ec99
        getDateDs1307();
        sdfilename0 = txt_date;
        sdfilename = sdfilename0+".txt" ;
@@ -195,11 +184,7 @@
       delay(1000);                             //  take a break
       }else{
       Serial.println("==========off==========");
-<<<<<<< HEAD
-      //delay(3600000);
-=======
      // delay(3600000);
->>>>>>> 72dc8ba7acb50a9cb17d33e611618753ce12ec99
       // 1min=60000 / 1 hour = 3600000
       flagpul = 1;
       sumpulse = 0;
@@ -216,7 +201,6 @@
 
 /* Bluetooth *****************/ 
    void bt(int BPM){
-<<<<<<< HEAD
     // Keep reading from HC-05 and send to Arduino Serial Monitor
   if (bluetooth.available())
     Serial.write(bluetooth.read());
@@ -225,14 +209,7 @@
   if (Serial.available())
     bluetooth.write(Serial.read());
 
-=======
-      if (mySerial.available()) {
-    Serial.write(mySerial.read());
-      }
-      if (Serial.available()) {
-        mySerial.write(Serial.read());
-      }
->>>>>>> 72dc8ba7acb50a9cb17d33e611618753ce12ec99
+
     /*
       if(Serial.available()>0)  
       {  
@@ -260,10 +237,7 @@
         }  
       } 
       */
-<<<<<<< HEAD
-      
-=======
->>>>>>> 72dc8ba7acb50a9cb17d33e611618753ce12ec99
+
      }
      
 /* SD Card Function *****************/ 
