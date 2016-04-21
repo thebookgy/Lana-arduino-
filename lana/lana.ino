@@ -2,10 +2,11 @@
 
     #include <SPI.h>
     #include <SD.h>
-    #include "Wire.h"
+    //#include <Wire.h>
+
     #include <SoftwareSerial.h>
 
-    //SoftwareSerial bluetooth(7, 8); // RX, TX
+    SoftwareSerial bluetooth(7, 8); // RX, TX
     File myFile;
     const int chipSelect = 4;
     String sdfilename0;
@@ -31,6 +32,7 @@
     volatile int IBI = 600;             // int that holds the time interval between beats! Must be seeded! 
     volatile boolean Pulse = false;     // "True" when User's live heartbeat is detected. "False" when not a "live beat". 
     volatile boolean QS = false;        // becomes true when Arduoino finds a beat.
+    /*
     float voltage;
     float filterFrequency = 5.0; 
     float R = 0.000116343;  // or 0.003234; 0.002804; 0.026342059; 2912.114; 5921.87658; Measurement Noise
@@ -41,17 +43,17 @@
     float Xp = 0.0; // Previous estimation of true state
     float Zp = 0.0; // Estimation of true state
     float Xe = 0.0; // Estimation from kalman filter (Result)    
+    */
     // Regards Serial OutPut  -- Set This Up to your needs
     static boolean serialVisual = true;   // Set to 'false' by Default.  Re-set to 'true' to see Arduino Serial Monitor ASCII Visual Pulse 
 
     //setting time
     
-    String txt_date;
-    String txt_dateformat;
+    String txt_date = "22-04-16";
     String txt_time;
     String txt_min;
-
-    
+/*
+  
     #define DS1307_I2C_ADDRESS 0x68 // the I2C address of Tiny RTC
     byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
     // Convert normal decimal numbers to binary coded decimal
@@ -73,20 +75,23 @@
       second =0;
       minute = 20;
       hour = 12;
-      dayOfWeek = 4;
-      dayOfMonth =12;
-      month =3;
-      year= 16;
+     
       Wire.beginTransmission(DS1307_I2C_ADDRESS);
       Wire.write(decToBcd(0));
       Wire.write(decToBcd(second)); // 0 to bit 7 starts the clock
       Wire.write(decToBcd(minute));
       Wire.write(decToBcd(hour)); // If you want 12 hour am/pm you need to set
       // bit 6 (also need to change readDateDs1307)
+      
+       dayOfWeek = 4;
+      dayOfMonth =12;
+      month =3;
+      year= 16;
       Wire.write(decToBcd(dayOfWeek));
       Wire.write(decToBcd(dayOfMonth));
       Wire.write(decToBcd(month));
       Wire.write(decToBcd(year));
+      
       Wire.endTransmission();
     }
     // Function to gets the date and time from the ds1307 and prints result
@@ -100,11 +105,13 @@
       second = bcdToDec(Wire.read() & 0x7f);
       minute = bcdToDec(Wire.read());
       hour = bcdToDec(Wire.read() & 0x3f); // Need to change this if 12 hour am/pm
+     
       dayOfWeek = bcdToDec(Wire.read());
       dayOfMonth = bcdToDec(Wire.read());
       month = bcdToDec(Wire.read());
       year = bcdToDec(Wire.read());
-      txt_date=String(dayOfMonth,DEC)+"-"+String(month, DEC)+"-"+String(year, DEC);
+      
+      //txt_date=String(dayOfMonth,DEC)+"-"+String(month, DEC)+"-"+String(year, DEC);
       //txt_dateformat=String(dayOfMonth,DEC)+"\/"+String(month, DEC)+"\/"+String(year, DEC);
       //txt_time=String(hour,DEC)+":"+String(minute, DEC)+":"+String(second, DEC);
       txt_time=String(hour,DEC)+":"+String(minute, DEC);
@@ -112,26 +119,22 @@
       
       
       //Serial.print(hour, DEC);
-      /*
-      Serial.print(" Date: "+txt_date);
-      Serial.print("|");
-      Serial.print(" Time: "+txt_time);
-      Serial.println();
-      */
+
       //delay(2000);
     }
+    */
     
       
     void setup() 
     {  
       
-      Wire.begin();
+      //Wire.begin();
       pinMode(blinkPin,OUTPUT);         // pin that will blink to your heartbeat!
       pinMode(fadePin,OUTPUT);          // pin that will fade to your heartbeat!
       Serial.begin(9600);             // we agree to talk fast!
       pinMode(LED, OUTPUT);  
       Serial.println(">> START<<");  
-      setDateDs1307(); //Set current time;
+     // setDateDs1307(); //Set current time;
      
       
       interruptSetup();                 // sets up to read Pulse Sensor signal every 2mS 
@@ -139,12 +142,13 @@
        // UN-COMMENT THE NEXT LINE AND APPLY THAT VOLTAGE TO THE A-REF PIN
     //   analogReference(EXTERNAL);   
       
-    // bluetooth.begin(9600);
+     bluetooth.begin(9600);
 
     }  
       
     void loop() 
     {  
+    
       /*
        for(int i=0; i<=30000; i++){
         pul();
@@ -154,9 +158,9 @@
        
        pul();
        bt(avgBPM);
-       getDateDs1307();
+       //getDateDs1307();
        sdfilename0 = txt_date;
-       sdfilename = sdfilename0+".txt" ;
+       sdfilename = txt_date+".txt" ;
        
     }  
 
@@ -208,9 +212,9 @@
 /* Bluetooth *****************/ 
    void bt(int avgBPM){
    // input = bluetooth.read(); 
-    // bluetooth.println(String(avgBPM));
+     bluetooth.println(String(avgBPM));
     // Keep reading from HC-05 and send to Arduino Serial Monitor
-    /*
+    
   if (bluetooth.available()){
     Serial.write(bluetooth.read());
   }
@@ -220,7 +224,7 @@
     bluetooth.write(Serial.read());
     
   }
-  */
+
 
 
     /*

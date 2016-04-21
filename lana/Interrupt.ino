@@ -31,18 +31,20 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
   Signal = analogRead(pulsePin);              // read the Pulse Sensor 
    Signal2 = analogRead(pulsePin);       
   /* kalman *********************************/
+  /*
   Pc = Pp + Q;         // variance of pre estimation state
   G = Pc/(Pc + R);    // kalman gain
   Pp = (1-G)*Pc;       // variance of estimation state
   Xp = Xe;            // previous estimation of true state
   Zp = Xp;            // estimation of true state
   Xe = G*(Signal-Zp)+Xp;   // the kalman estimate of the sensor voltage
+  
   //Signal = Xe;        // Keep estimate value
-  //Signal2 = Xe;
+  //Signal2 = Xe;*/
   /* end kalman ***************************/
   sampleCounter += 2;                         // keep track of the time in mS with this variable
   int N = sampleCounter - lastBeatTime;       // monitor the time since the last beat to avoid noise
-  voltage = Signal * 1.1 / 1024; //or 50/2023
+ // voltage = Signal * 1.1 / 1024; //or 50/2023
 
 
   
