@@ -5,13 +5,14 @@
     #include "Wire.h"
     #include <SoftwareSerial.h>
 
-    SoftwareSerial bluetooth(6, 7); // RX, TX
+    SoftwareSerial bluetooth(7, 8); // RX, TX
     File myFile;
     const int chipSelect = 4;
     String sdfilename0;
     String sdfilename; 
     int LED= 12;  
-    char input;  
+    char input;
+    int inputbt;  
         //  Variables
     int sumpulse = 0;
     int BPMcount = 0;
@@ -45,7 +46,10 @@
 
     //setting time
     
-    String txt_date,txt_time,txt_min;
+    String txt_date;
+    String txt_dateformat;
+    String txt_time;
+    String txt_min;
 
     
     #define DS1307_I2C_ADDRESS 0x68 // the I2C address of Tiny RTC
@@ -101,6 +105,7 @@
       month = bcdToDec(Wire.read());
       year = bcdToDec(Wire.read());
       txt_date=String(dayOfMonth,DEC)+"-"+String(month, DEC)+"-"+String(year, DEC);
+      txt_dateformat=String(dayOfMonth,DEC)+"/"+String(month, DEC)+"/"+String(year, DEC);
       //txt_time=String(hour,DEC)+":"+String(minute, DEC)+":"+String(second, DEC);
       txt_time=String(hour,DEC)+":"+String(minute, DEC);
       txt_min=String(minute, DEC);  
@@ -149,9 +154,9 @@
        */
        
        pul();
-       bt(BPM);
+       bt(avgBPM);
        getDateDs1307();
-       sdfilename0 = txt_date;
+       sdfilename0 = txt_dateformat;
        sdfilename = sdfilename0+".txt" ;
        
     }  
@@ -200,14 +205,19 @@
     }
 
 /* Bluetooth *****************/ 
-   void bt(int BPM){
+   void bt(int avgBPM){
+     bluetooth.println(String(avgBPM));
     // Keep reading from HC-05 and send to Arduino Serial Monitor
-  if (bluetooth.available())
+  if (bluetooth.available()){
     Serial.write(bluetooth.read());
+  }
 
   // Keep reading from Arduino Serial Monitor and send to HC-05
-  if (Serial.available())
+  if (Serial.available()){
     bluetooth.write(Serial.read());
+   // inputbt = Serial.read(); 
+    
+  }
 
 
     /*
@@ -257,7 +267,7 @@ void sd(String sdfilename,int BPM){
   // if open file has success, write data
   if (myFile) {
     Serial.print("Writing to "+String(sdfilename));
-    myFile.println(txt_time+" - "+String(BPM)); //write data
+    myFile.println(sdfilename+" - "+txt_time+" - "+String(BPM)); //write data
     myFile.close(); // close file
     Serial.println(" done.");
   } else {
