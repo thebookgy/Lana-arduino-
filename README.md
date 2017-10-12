@@ -1,16 +1,19 @@
-#Lana
+# Lana - Arduino
 
 This is our senior project with Application(Android).
 
 
-Application Link:https://github.com/last3oy/Lana
+Application Link: [Lana - App](https://github.com/last3oy/Lana)
 
-#Connect Module
-![Alt text](https://github.com/thebookgy/arduino/blob/master/SV.png "Optional title")
-#Team
+# Connect Module 
+<br/>
+<img src="https://i.imgur.com/qAnEflv.png">
+<br/>
 
-Chanala Wilangka
+# Team
 
-Patipon Suksangeam
+`Chanala Wilangka`
 
-Apinut Oopachodsuwan
+`Patipon Suksangeam`
+
+`Apinut Oopachodsuwan`
